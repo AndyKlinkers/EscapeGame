@@ -37,6 +37,7 @@ public:
 
 private:
 	float Reach = 100;
+
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent * InputComponent = nullptr;
 
@@ -46,4 +47,6 @@ private:
 	void FindPhysicsHandle(FString &ObjectName);
 	void FindInputComponent(FString &ObjectName);
 	const FHitResult GetFirstPhysicsBodyInReach();
+	FVector GetReachLineEnd();
+	FVector GetReachLineStart();
 };
