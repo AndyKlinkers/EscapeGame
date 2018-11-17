@@ -17,19 +17,11 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	Owner = GetOwner();
-
-	
-}
-
-void UOpenDoor::OpenDoor()
-{
-	Owner->SetActorRotation({ 0,OpenAngle,0 });
-}
-void UOpenDoor::CloseDoor()
-{
-	Owner->SetActorRotation({ 0,0,0 });
+	if (PressurePlate == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s OpenDoor component: No trigger volume bound"), *GetOwner()->GetName())
+	}
 }
 
 
@@ -38,17 +30,31 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	if (GetMassFromPlate() > TriggerMass)
 	{
-		OpenDoor();
-		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
-	}
-	if (GetWorld()->GetTimeSeconds() - DoorLastOpenTime > DoorCloseDelay)
-	{
-		CloseDoor();
+		OnOpen.Broadcast();
+	}else {
+		OnClose.Broadcast();
 	}
 
 	
+}
+
+float UOpenDoor::GetMassFromPlate()
+{
+	float TotalMass = 0;
+	TArray<AActor*> OverlappingActorList;
+	if (PressurePlate == nullptr)
+	{
+		return TotalMass;
+	}
+
+	PressurePlate->GetOverlappingActors(OUT OverlappingActorList);
+	for (auto* CurrentActor : OverlappingActorList)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NAME OF ACTOR IS %s"), *CurrentActor->GetName())
+		TotalMass += CurrentActor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+	return TotalMass;
 }
 
