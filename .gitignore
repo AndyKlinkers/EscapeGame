@@ -75,3 +75,46 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff
+docs/.idea/**/workspace.xml
+docs/.idea/**/tasks.xml
+docs/.idea/**/usage.statistics.xml
+docs/.idea/**/dictionaries
+docs/.idea/**/shelf
+
+# Generated files
+docs/.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+docs/.idea/**/dataSources/
+docs/.idea/**/dataSources.ids
+docs/.idea/**/dataSources.local.xml
+docs/.idea/**/sqlDataSources.xml
+docs/.idea/**/dynamic.xml
+docs/.idea/**/uiDesigner.xml
+docs/.idea/**/dbnavigator.xml
+
+
+# CMake
+cmake-build-*/
+
+# Mongo Explorer plugin
+docs/.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Editor-based Rest Client
+docs/.idea/httpRequests
+
