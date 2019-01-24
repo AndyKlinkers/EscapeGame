@@ -52,8 +52,15 @@ float UOpenDoor::GetMassFromPlate()
 	PressurePlate->GetOverlappingActors(OUT OverlappingActorList);
 	for (auto* CurrentActor : OverlappingActorList)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NAME OF ACTOR IS %s"), *CurrentActor->GetName())
-		TotalMass += CurrentActor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		
+		auto TempMass = CurrentActor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		auto vaag = CurrentActor->FindComponentByClass<UPrimitiveComponent>()->GetName();
+		UE_LOG(LogTemp, Warning, TEXT("NAME OF class IS (%s)"), *vaag)
+
+		FString Vervaagd(std::to_string(TempMass).c_str());
+		UE_LOG(LogTemp, Warning, TEXT("NAME OF ACTOR IS (%s) AND IT's MASS IS (%s)"), *CurrentActor->GetName(), *Vervaagd)
+
+		TotalMass += TempMass;
 	}
 	return TotalMass;
 }

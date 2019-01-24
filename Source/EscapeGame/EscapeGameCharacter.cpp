@@ -13,13 +13,23 @@ AEscapeGameCharacter::AEscapeGameCharacter(const FObjectInitializer& ObjectIniti
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+
+
+	GetMesh()->SetOwnerNoSee(true);
+	GetMesh()->SetCastShadow(true);
+
+
 }
 
 // Called when the game starts or when spawned
 void AEscapeGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetMesh()->SetOwnerNoSee(true);
+	GetMesh()->SetCastShadow(true);
+	DefaultMaxWalkingSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
 }
 
 // Called every frame
@@ -37,15 +47,16 @@ void AEscapeGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("MoveRight", this, &AEscapeGameCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("LookHorizontal", this, &AEscapeGameCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookVertical", this, &AEscapeGameCharacter::AddControllerPitchInput);
-
+	PlayerInputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &AEscapeGameCharacter::StartSprint);
+	PlayerInputComponent->BindAction("Sprint", EInputEvent::IE_Released, this, &AEscapeGameCharacter::StopSprint);
 }
 
 void AEscapeGameCharacter::MoveForward(float Val)
 {
-	if ((Controller != NULL) && (Val != 0.0f))
+	if (Controller && Val != 0.0f)
 	{
 
-		FRotator Rotation = Controller->GetControlRotation();
+		/*FRotator Rotation = Controller->GetControlRotation();
 
 		if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
 		{
@@ -54,7 +65,8 @@ void AEscapeGameCharacter::MoveForward(float Val)
 		}
 
 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-		AddMovementInput(Direction, Val);
+		*/
+		AddMovementInput(GetActorForwardVector(), Val);
 	}
 }
 
@@ -63,10 +75,20 @@ void AEscapeGameCharacter::MoveRight(float Val)
 	if ((Controller != NULL) && (Val != 0.0f))
 	{
 
-		const FRotator Rotation = Controller->GetControlRotation();
+		/*const FRotator Rotation = Controller->GetControlRotation();
 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-
-		AddMovementInput(Direction, Val);
+		*/
+		AddMovementInput(GetActorRightVector(), Val);
 	}
 }
 
+void AEscapeGameCharacter::StartSprint()
+{
+	bSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkingSpeed * SprintModifier;
+}
+void AEscapeGameCharacter::StopSprint()
+{
+	bSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkingSpeed;
+}

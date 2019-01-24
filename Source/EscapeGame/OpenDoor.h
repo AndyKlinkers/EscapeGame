@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/PrimitiveComponent.h"
+#include <string>
 #include "OpenDoor.generated.h"
 
 #define OUT
