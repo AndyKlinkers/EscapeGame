@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Engine.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -24,6 +24,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void CheckForInteractables();
 
 public:	
 	// Called every frame
@@ -31,22 +32,24 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UFUNCTION()
-		void MoveForward(float Val);
+	void MoveForward(float Val);
 	UFUNCTION()
-		void MoveRight(float Val);
+	void MoveRight(float Val);
 	UFUNCTION()
-		void StartSprint();
+	void StartSprint();
 	UFUNCTION()
-		void StopSprint();
+	void StopSprint();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-		UCameraComponent* FirstPersonCameraComponent;
-	UPROPERTY(EditAnywhere)
-		float SprintModifier = 2;
-	UPROPERTY(EditAnywhere)
-		float DefaultMaxWalkingSpeed;
+	UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(EditAnywhere)
+	float SprintModifier = 2;
+
+	UPROPERTY(EditAnywhere)
+	float DefaultMaxWalkingSpeed;
 private:
 	bool bSprinting;
 	

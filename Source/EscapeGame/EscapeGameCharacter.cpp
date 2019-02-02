@@ -1,6 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "EscapeGameCharacter.h"
+#include "Interactable.h"
+#include "ManPickup.h"
+#include "InventoryItem.h"
+#include "EscapeGameController.h"
+
 
 // Sets default values
 AEscapeGameCharacter::AEscapeGameCharacter(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -36,6 +42,8 @@ void AEscapeGameCharacter::BeginPlay()
 void AEscapeGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	CheckForInteractables();
+
 
 }
 
@@ -67,6 +75,7 @@ void AEscapeGameCharacter::MoveForward(float Val)
 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
 		*/
 		AddMovementInput(GetActorForwardVector(), Val);
+		
 	}
 }
 
@@ -91,4 +100,38 @@ void AEscapeGameCharacter::StopSprint()
 {
 	bSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkingSpeed;
+}
+
+
+void AEscapeGameCharacter::CheckForInteractables()
+{
+	// Create a LineTrace to check for a hit
+	FHitResult HitResult;
+
+	int32 Range = 5000;
+	FVector StartTrace = FirstPersonCameraComponent->GetComponentLocation();
+	FVector EndTrace = (FirstPersonCameraComponent->GetForwardVector() * Range) + StartTrace;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	AEscapeGameController* IController = Cast<AEscapeGameController>(GetController());
+
+	if (IController)
+	{
+		// Check if something is hit
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, QueryParams))
+		{
+			// Cast the actor to AInteractable
+			AInteractable* Interactable = Cast<AInteractable>(HitResult.GetActor());
+			// If the cast is successful
+			if (Interactable)
+			{
+				IController->CurrentInteractable = Interactable;
+				return;
+			}
+		}
+
+		IController->CurrentInteractable = nullptr;
+	}
 }
